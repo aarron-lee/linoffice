@@ -59,6 +59,32 @@ NEEDED_BOOT=false
 IS_OFFICE_WXP_APP=false  
 SCRIPT_START_TIME=0      
 
+
+USE_VENV=0
+
+use_venv() {
+  VENV_PATH=$HOME/.local/bin/linoffice/venv/bin/activate
+  if [[ -f "$VENV_PATH" ]]; then
+    echo "Using venv at $VENV_PATH"
+    source $VENV_PATH
+    USE_VENV=1
+  else
+    echo "venv not found"
+  fi
+}
+
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    DISTRO_ID=$ID
+    DISTRO_LIKE=${ID_LIKE:-}
+
+    case "$DISTRO_ID" in
+    bazzite)
+        use_venv
+        ;;
+    esac
+  fi
+
 ### TRAPS ###
 # Catch SIGINT (CTRL+C) to call 'waCleanUp'.
 trap waCleanupInstance SIGINT SIGTERM SIGHUP EXIT
