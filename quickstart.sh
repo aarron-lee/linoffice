@@ -11,6 +11,15 @@ GITHUB_API_URL="https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/releases
 
 LINOFFICE_SCRIPT="$TARGET_DIR/gui/linoffice.py"
 
+USE_VENV=0
+
+use_venv() {
+  mkdir -p $TARGET_DIR
+  python -m venv --system-site-packages $TARGET_DIR/venv
+  source $TARGET_DIR/venv/bin/activate
+  USE_VENV=1
+}
+
 ##################################################
 # PART 1: INSTALL DEPENDENCIES
 ##################################################
@@ -31,6 +40,13 @@ detect_package_manager() {
     nixos|guix|silverblue|coreos|kinoite|microos)
       echo "Unsupported system type: $DISTRO_ID"
       exit 1
+      ;;
+  esac
+
+  case "$DISTRO_ID" in
+    bazzite)
+      echo "Using venv"
+      use_venv
       ;;
   esac
 
@@ -272,7 +288,9 @@ start_linoffice() {
   echo "Starting Linoffice..."
 
   # Check if python3 exists
-  if command -v python3 >/dev/null 2>&1; then
+  if [[ "$USE_VENV" == "1" ]]; then
+    PYTHON_CMD="$TARGET_DIR/venv/bin/python3"
+  elif command -v python3 >/dev/null 2>&1; then
     PYTHON_CMD="python3"
   elif command -v python >/dev/null 2>&1; then
     PYTHON_CMD="python"
