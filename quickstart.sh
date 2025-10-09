@@ -501,7 +501,6 @@ start_linoffice() {
 read -p "Welcome to the LinOffice installer. We will check and install dependencies, download the latest LinOffice release, and then run the main setup, which will install a Windows container with Microsoft Office. Are you sure you want to continue? (y/n): " confirmation
 if [[ "$confirmation" == "y" || "$confirmation" == "Y" ]]; then
   dependencies_main "$@"
-  download_latest
   start_linoffice
 else
   echo "Cancelled."
